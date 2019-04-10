@@ -8,6 +8,7 @@
     "max-func-body-length": [true, 300],
     "no-redundant-jsdoc": false,
     "class-name": true,
+    "interface-name": false,
     "no-unnecessary-class": false,
     "member-access": false,
     "no-parameter-properties": false,
