@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { ConfigModule, ConfigService } from 'nestjs-config'
 import { resolve } from 'path'
 import { BotModule } from './modules/bot/bot.module'
+import { SiteModule } from './modules/site/site.module'
 import { SubscribeModule } from './modules/subscribe/subscribe.module'
 import { UserModule } from './modules/user/user.module'
 
@@ -18,7 +19,8 @@ import { UserModule } from './modules/user/user.module'
     }),
     UserModule,
     SubscribeModule,
-    BotModule
+    BotModule,
+    SiteModule
   ]
 })
 export class AppModule {}

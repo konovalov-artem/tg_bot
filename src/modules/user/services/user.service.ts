@@ -16,4 +16,15 @@ export class UserService {
 
     return createdUser.save()
   }
+
+  async findOneOrCreate(input: CreateUserDto): Promise<User> {
+    const { telegramId } = input
+    const user = await this.userModel.findOne({ telegramId })
+
+    if (Boolean(user)) {
+      return user
+    } else {
+      return this.create(input)
+    }
+  }
 }
