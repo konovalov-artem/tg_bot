@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { isEmpty } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import { ConfigService } from 'nestjs-config'
 import { CallbackQuery, Message } from 'node-telegram-bot-api'
 import { Subscribe } from '../../subscribe/interfaces'
@@ -17,14 +17,10 @@ export class BotCallbackQueryController {
   ) {}
 
   async handleCallbackQuery(query: CallbackQuery): Promise<any> {
-    const {
-      id: callbackQueryId,
-      message: {
-        message_id: messageId,
-        chat: { id: telegramId },
-        entities: [{ url }]
-      }
-    } = query
+    const callbackQueryId = get(query, 'id')
+    const messageId = get(query, 'message.message_id')
+    const telegramId = get(query, 'message.chat.id')
+    const url = get(query, 'entities[0].url')
 
     switch (query.data) {
       case CallbackQueryType.NEW_SUBSCRIBE:
@@ -42,7 +38,7 @@ export class BotCallbackQueryController {
     return this.botService.sendMessage(
       telegramId,
       this.configService.get('message.newSubscribe'),
-      this.configService.get('message.newSubscribeOptions')
+      this.configService.get('message-options.newSubscribe')
     )
   }
 
@@ -52,8 +48,8 @@ export class BotCallbackQueryController {
     if (isEmpty(subscribes)) {
       return this.botService.sendMessage(
         telegramId,
-        this.configService.get('messages.doNotHaveSubscribes'),
-        this.configService.get('message.doNotHaveSubscribesOptions')
+        this.configService.get('message.doNotHaveSubscribes'),
+        this.configService.get('message-options.doNotHaveSubscribes')
       )
     } else {
       return Promise.all(
@@ -61,7 +57,7 @@ export class BotCallbackQueryController {
           this.botService.sendMessage(
             telegramId,
             this.configService.get('message').prettyLink(subscribe.url, subscribe.title),
-            this.configService.get('message.deleteSubscribeOptions')
+            this.configService.get('message-options.deleteSubscribe')
           )
         )
       )
