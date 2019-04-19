@@ -21,10 +21,10 @@ export class SubscribeService {
     return this.subscribeModel.deleteOne(condition)
   }
 
-  async updateOne(input: UpdateSubscribeDto): Promise<Subscribe[]> {
-    const { telegramId, url, data } = input
+  async updateOne(condition: Partial<Subscribe>, input: UpdateSubscribeDto): Promise<Subscribe[]> {
+    const { data } = input
 
-    return this.subscribeModel.updateOne({ telegramId, url }, { $push: { $each: data } })
+    return this.subscribeModel.updateOne(condition, { $push: { $each: data } })
   }
 
   async getMany(condition: Partial<Subscribe> = {}) {

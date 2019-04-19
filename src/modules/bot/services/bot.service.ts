@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common'
+import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { ConfigService } from 'nestjs-config'
 import TelegramBot, {
   AnswerCallbackQueryOptions,
@@ -6,22 +6,32 @@ import TelegramBot, {
   Message,
   SendMessageOptions
 } from 'node-telegram-bot-api'
-import { BotCallbackQueryController } from '../controllers/bot-callback-query.controller'
-import { BotTextController } from '../controllers/bot-text.controller'
+import { Subject } from 'rxjs/internal/Subject'
+import { BotCallbackQueryController, BotTextController } from 'src/modules/bot/controllers'
+import { Message as IMessageSchema } from 'src/modules/message/interfaces'
+import { MessageService } from 'src/modules/message/services'
 
 @Injectable()
-export class BotService {
+export class BotService implements OnModuleInit {
   private readonly bot: TelegramBot
+  private readonly messagesSubject: Subject<IMessageSchema[]> = new Subject()
 
   constructor(
     private readonly configService: ConfigService,
     @Inject(forwardRef(() => BotTextController))
     private readonly botTextController: BotTextController,
-    private readonly botCallbackQueryController: BotCallbackQueryController
+    private readonly botCallbackQueryController: BotCallbackQueryController,
+    private readonly messageService: MessageService
   ) {
     this.bot = new TelegramBot(this.configService.get('bot.token'), { polling: true })
 
     this.initBot()
+  }
+
+  async onModuleInit(): Promise<any> {
+    const messages = await this.messageService.getMany()
+    this.messagesSubject.subscribe(this.messageScheduler)
+    this.messagesSubject.next(messages)
   }
 
   initBot() {
@@ -48,5 +58,13 @@ export class BotService {
 
   async answerCallbackQuery(callbackQueryId: string, options?: Partial<AnswerCallbackQueryOptions>): Promise<boolean> {
     return this.bot.answerCallbackQuery(callbackQueryId, options)
+  }
+
+  pushMessages(messages: IMessageSchema[]) {
+    this.messagesSubject.next(messages)
+  }
+
+  async messageScheduler(data: IMessageSchema[]) {
+    console.log({ data })
   }
 }

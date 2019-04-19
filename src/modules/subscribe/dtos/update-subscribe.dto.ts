@@ -1,5 +1,3 @@
 export class UpdateSubscribeDto {
-  url: string
-  telegramId: number
-  data: string[]
+  data: { link: string; title: string }[]
 }

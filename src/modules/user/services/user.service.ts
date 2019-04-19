@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { CreateUserDto } from '../dtos/create-user.dto'
-import { User } from '../interfaces/user.interface'
+import { CreateUserDto } from '../dtos'
+import { User } from '../interfaces'
 
 @Injectable()
 export class UserService {
@@ -19,7 +19,7 @@ export class UserService {
 
   async findOneOrCreate(input: CreateUserDto): Promise<User> {
     const { telegramId } = input
-    const user = await this.userModel.findOne({ telegramId })
+    const user = await this.userModel.findOne({ telegramId }).exec()
 
     if (Boolean(user)) {
       return user

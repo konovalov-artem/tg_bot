@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { omit } from 'lodash'
 import puppeteer, { Browser, Page } from 'puppeteer'
 import URL from 'url'
-import { PageEvaluateArgumentsInterface } from '../interfaces/page-evaluate-arguments.interface'
+import { PageEvaluateArgumentsInterface } from '../interfaces'
 
 @Injectable()
 export class PuppeteerService implements OnModuleInit {
@@ -19,28 +19,30 @@ export class PuppeteerService implements OnModuleInit {
     await this.page.goto(url)
   }
 
-  async pageEvaluate(args: PageEvaluateArgumentsInterface): Promise<any> {
+  async pageEvaluate(args: PageEvaluateArgumentsInterface): Promise<any | { link: string; title: string }> {
     return this.page.evaluateHandle(
       (selectors: PageEvaluateArgumentsInterface) => {
         const { advertSelector, linkSelector, titleSelector } = selectors
 
-        const adverts = document.querySelectorAll<HTMLDivElement>(advertSelector)
-
-        return adverts.forEach((advert: HTMLDivElement) => {
-          return {
-            link: advert.querySelector<HTMLLinkElement>(linkSelector).href,
-            title: advert.querySelector(titleSelector).innerHTML
-          }
+        return document
+          .querySelectorAll<HTMLDivElement>(advertSelector)
+          .forEach((advert: HTMLDivElement) => {
+            return {
+              link: advert.querySelector<HTMLLinkElement>(linkSelector).href,
+              title: advert.querySelector(titleSelector).innerHTML
+            }
         })
       },
-      JSON.stringify(args))
+      JSON.stringify(args)
+    )
   }
 
   getNextPageUrl(): string {
     const parsedUrl = omit(URL.parse(this.page.url(), true), ['search'])
 
-    this.currentPage += 1
-    parsedUrl.query[this.attributes.pageAttr] = this.currentPage
+    // TODO: !!!!
+
+    // parsedUrl.query[this.attributes.pageAttr]
     Logger.log(
       `Before: ${this.page.url()};
       After: ${URL.format(parsedUrl)}`,
@@ -48,5 +50,9 @@ export class PuppeteerService implements OnModuleInit {
     )
 
     return URL.format(parsedUrl)
+  }
+
+  goToNextPageUrl() {
+    console.log('1')
   }
 }
