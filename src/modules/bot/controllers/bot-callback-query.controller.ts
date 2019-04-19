@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { isEmpty } from 'lodash'
 import { ConfigService } from 'nestjs-config'
 import { CallbackQuery, Message } from 'node-telegram-bot-api'
@@ -11,14 +11,18 @@ import { BotService } from '../services'
 export class BotCallbackQueryController {
   constructor(
     private readonly configService: ConfigService,
+    @Inject(forwardRef(() => BotService))
     private readonly botService: BotService,
     private readonly subscribeService: SubscribeService
   ) {}
 
   async handleCallbackQuery(query: CallbackQuery): Promise<any> {
     const {
+      id: callbackQueryId,
       message: {
-        chat: { id: telegramId }
+        message_id: messageId,
+        chat: { id: telegramId },
+        entities: [{ url }]
       }
     } = query
 
@@ -28,7 +32,7 @@ export class BotCallbackQueryController {
       case CallbackQueryType.MY_SUBSCRIBES:
         return this.handleMySubscribes(telegramId)
       case CallbackQueryType.DELETE_SUBSCRIBE:
-        return this.handleDeleteSubscribe()
+        return this.handleDeleteSubscribe(telegramId, url, callbackQueryId, messageId.toString())
       default:
         return
     }
@@ -64,10 +68,12 @@ export class BotCallbackQueryController {
     }
   }
 
-  handleDeleteSubscribe() {
-    const url = query.message.entities[0].url
-    const chatId = chatId
-    process.deleteSub(url, chatId)
-    chat.delsub(query)
+  async handleDeleteSubscribe(telegramId: number, url: string, callbackQueryId: string, messageId: string) {
+    await this.subscribeService.deleteOne({ telegramId, url })
+    await this.botService.deleteMessage(telegramId, messageId)
+    await this.botService.answerCallbackQuery(
+      callbackQueryId,
+      this.configService.get('message.deleteSubscribe')
+    )
   }
 }

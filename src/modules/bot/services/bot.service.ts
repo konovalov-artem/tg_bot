@@ -20,6 +20,7 @@ export class BotService implements OnModuleInit {
     private readonly configService: ConfigService,
     @Inject(forwardRef(() => BotTextController))
     private readonly botTextController: BotTextController,
+    @Inject(forwardRef(() => BotCallbackQueryController))
     private readonly botCallbackQueryController: BotCallbackQueryController,
     private readonly messageService: MessageService
   ) {
