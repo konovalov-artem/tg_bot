@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
-import { SubscribeSchema } from './schemas/subscribe.schema'
-import { SubscribeService } from './services/subscribe.service'
+import { SubscribeSchema } from './schemas'
+import { SubscribeService } from './services'
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Subscribe', schema: SubscribeSchema }])
   ],
-  providers: [SubscribeService]
+  providers: [SubscribeService],
+  exports: [SubscribeService]
 })
 export class SubscribeModule {}

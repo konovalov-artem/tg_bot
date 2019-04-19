@@ -1,5 +1,3 @@
 export class UpdateSubscribeDto {
-  url: string
-  chatId: string
-  data: string[]
+  data: { link: string; title: string }[]
 }

@@ -1,3 +1,5 @@
+// # Promise fix from https://github.com/yagop/node-telegram-bot-api/issues/319
+process.env.NTBA_FIX_319 = '1'
 import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { ConfigService } from 'nestjs-config'

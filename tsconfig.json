@@ -13,7 +13,7 @@
     "sourceMap": true,
     "removeComments": true,
     "outDir": "dist/src",
-    "baseUrl": "./app",
+    "baseUrl": ".",
     "lib": ["dom", "es2017", "esnext"]
   },
   "exclude": ["node_modules"]
