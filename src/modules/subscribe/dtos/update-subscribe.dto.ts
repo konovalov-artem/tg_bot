@@ -1,5 +1,5 @@
 export class UpdateSubscribeDto {
   url: string
-  chatId: string
+  telegramId: number
   data: string[]
 }

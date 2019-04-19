@@ -58,8 +58,8 @@ export class SiteService {
     const message = []
 
     if (this.dbData) {
-      let dbData = new Set(this.dbData)
-      let newData = []
+      const dbData = new Set(this.dbData)
+      const newData = []
       this.data.forEach((item) => {
         if (!dbData.has(item.link)) {
           message.push({
