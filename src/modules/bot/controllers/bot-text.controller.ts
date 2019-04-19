@@ -16,7 +16,7 @@ export class BotTextController {
   async handleMessage(msg: Message) {
     const { text, chat: { id: telegramId }, from: { first_name: firstName, username: userName } } = msg
     const user = await this.userService.findOneOrCreate({ firstName, userName, telegramId })
-    let message: string
+    let message: string = 'some default answer'
     let messageOptions: SendMessageOptions
 
     switch (text) {

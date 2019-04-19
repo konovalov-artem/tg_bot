@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common'
-import { PuppeteerService } from './services/puppeteer.service'
-import { SiteService } from './services/site.service'
+import { BotModule } from '../bot'
+import { SubscribeModule } from '../subscribe'
+import { ProcessService, PuppeteerService, SiteService } from './services'
 
 @Module({
-  providers: [SiteService, PuppeteerService]
+  imports: [SubscribeModule, BotModule],
+  providers: [SiteService, PuppeteerService, ProcessService]
 })
 export class SiteModule {}

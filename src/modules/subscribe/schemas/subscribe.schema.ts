@@ -5,7 +5,8 @@ export const SubscribeSchema = new Schema(
     chatId: String,
     title: String,
     url: String,
-    source: String
+    source: String,
+    advData: [String]
   },
   { timestamps: true }
 )

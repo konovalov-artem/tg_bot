@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { CreateSubscribeDto } from '../dtos/create-subscribe.dto'
-import { DeleteSubscribeDto } from '../dtos/delete-subscribe.dto'
-import { UpdateSubscribeDto } from '../dtos/update-subscribe.dto'
-import { Subscribe } from '../interfaces/subscribe.interface'
+import { CreateSubscribeDto, UpdateSubscribeDto } from '../dtos'
+import { Subscribe } from '../interfaces'
 
 @Injectable()
 export class SubscribeService {
@@ -19,19 +17,17 @@ export class SubscribeService {
     return createdSubscribe.save()
   }
 
-  async deleteOne(input: DeleteSubscribeDto): Promise<any> {
-    const { chatId, url } = input
-
-    return this.subscribeModel.deleteOne({ chatId, url })
+  async deleteOne(condition: Partial<Subscribe>): Promise<any> {
+    return this.subscribeModel.deleteOne(condition)
   }
 
-  async updateOne(input: UpdateSubscribeDto): Promise<Subscribe[]> {
-    const { chatId, url, data } = input
+  async updateOne(condition: Partial<Subscribe>, input: UpdateSubscribeDto): Promise<Subscribe[]> {
+    const { data } = input
 
-    return this.subscribeModel.updateOne({ chatId, url }, { $push: { $each: data } })
+    return this.subscribeModel.updateOne(condition, { $push: { $each: data } })
   }
 
-  async getMany() {
+  async getMany(): Promise<Subscribe[]> {
     // todo: add sort({ advData: 1 })
     return this.subscribeModel.find().exec()
   }
