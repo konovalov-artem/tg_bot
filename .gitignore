@@ -1,26 +1,35 @@
-node_modules
-npm-debug.log
-.idea
-.env
-yarn-error.log
-.tmp
-upload/*
-logs/*
-dist
-!/lib/**/dist/
-database.log
-debug.log
+# compiled output
+/dist
+/node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
 .DS_Store
-coverage
-test.json
-.env.development
-.env.test
-.env.production
-.env.staging
-.env.debug
-development.env
-test.env
-production.env
-staging.env
-debug.env
-seed.env
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
