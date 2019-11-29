@@ -1,0 +1,31 @@
+version: "3.3"
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongo_db
+    restart: always
+    env_file:
+      - dev.env
+  bot:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - 3352:3352
+    depends_on:
+      - mongodb
+    volumes:
+      - ./:/usr/app
+      - /usr/app/node_modules
+    env_file:
+      - dev.env
+  mongo-express:
+    image: mongo-express
+    restart: always
+    depends_on:
+      - mongodb
+    ports:
+      - 8081:8081
+    env_file:
+      - dev.env

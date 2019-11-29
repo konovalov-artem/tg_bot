@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongo_db
+    restart: always
+    env_file:
+      - prod.env
+  bot:
+    image: # set url for docker image for production!
+    ports:
+      - 3352:3352
+    depends_on:
+      - mongodb
+    env_file:
+      - prod.env
+  mongo-express:
+    image: mongo-express
+    restart: always
+    depends_on:
+      - mongodb
+    ports:
+      - 8081:8081
+    env_file:
+      - prod.env

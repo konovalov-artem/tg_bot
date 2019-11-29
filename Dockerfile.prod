@@ -1,0 +1,25 @@
+# --- Building stage
+FROM node:12.7.0 AS builder
+
+WORKDIR /usr/src/app
+
+COPY . .
+RUN yarn install &&\
+yarn prestart &&\
+rm -rf node_modules &&\
+yarn install --production
+
+# ---
+
+# Running code under alpine image (production part mostly)
+FROM node:12.7.0-alpine
+
+WORKDIR /usr/app
+
+COPY --from=builder ["/usr/src/app", "./"]
+# RUN yarn global add pm2
+
+EXPOSE 3352
+
+#CMD ["pm2-runtime", "dist/main.js" ]
+CMD ["node", "dist/main.js" ]
